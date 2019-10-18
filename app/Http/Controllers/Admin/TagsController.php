@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\StoreTag;
 use App\Http\Controllers\Controller;
 use App\Tag;
 use Illuminate\Http\Request;
@@ -35,12 +36,9 @@ class TagsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreTag $request)
     {
-        $this->validate($request,[
-            'title' => 'required'
-        ]);
-        Tag::create($request->all());
+        Tag::create($request->validated());
         return redirect()->route('tags.index');
     }
 
@@ -63,13 +61,10 @@ class TagsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StoreTag $request, $id)
     {
-        $this->validate($request,[
-            'title' => 'required'
-        ]);
         $tag = Tag::find($id);
-        $tag->update($request->all());
+        $tag->update($request->validated());
         return redirect()->route('tags.index');
     }
 

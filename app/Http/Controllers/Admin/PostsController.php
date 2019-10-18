@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Category;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\StorePost;
 use App\Post;
 use App\Tag;
 use Illuminate\Http\Request;
@@ -39,17 +40,9 @@ class PostsController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StorePost $request)
     {
-        $this->validate($request, [
-            'title' => 'required',
-            'content' => 'required',
-            'date' => 'required',
-            'image' => 'nullable|image',
-            'category_id' => 'nullable'
-        ]);
-
-        $post = Post::add($request->all());
+        $post = Post::add($request->validated());
         $post->uploadImage($request->file('image'));
         $post->setCategory($request->get('category_id'));
         $post->setTags($request->get('tags'));
@@ -82,18 +75,10 @@ class PostsController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(StorePost $request, $id)
     {
-        $this->validate($request, [
-            'title' => 'required',
-            'content' => 'required',
-            'date' => 'required',
-            'image' => 'nullable|image',
-            'category_id' => 'nullable'
-        ]);
-
         $post = Post::find($id);
-        $post->edit($request->all());
+        $post->edit($request->validated());
         $post->uploadImage($request->file('image'));
         $post->setCategory($request->get('category_id'));
         $post->setTags($request->get('tags'));

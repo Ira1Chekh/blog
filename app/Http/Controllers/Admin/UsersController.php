@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Http\Requests\StoreUser;
 use App\User;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -36,15 +37,9 @@ class UsersController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(StoreUser $request)
     {
-        $this->validate($request,[
-            'name' => 'required',
-            'email' => 'required|email|unique:users',
-            'password' => 'required',
-            'avatar' => 'nullable|image'
-        ]);
-        $user = User::add($request->all());
+        $user = User::add($request->validated());
         $user->generatePassword($request->get('password'));
         $user->uploadAvatar($request->file('avatar'));
 
@@ -73,7 +68,6 @@ class UsersController extends Controller
     public function update(Request $request, $id)
     {
         $user = User::find($id);
-
         $this->validate($request,[
             'name' => 'required',
             'email' => [
@@ -83,7 +77,6 @@ class UsersController extends Controller
             ],
             'avatar' => 'nullable|image'
         ]);
-
         $user->edit($request->all());
         $user->uploadAvatar($request->file('avatar'));
         $user->generatePassword($request->get('password'));
